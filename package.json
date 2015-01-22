@@ -1,0 +1,32 @@
+{
+  "name": "goodeggs-formatters",
+  "version": "1.0.0",
+  "description": "formatters for good eggs",
+  "author": "Good Eggs <open-source@goodeggs.com>",
+  "contributors": [
+    "Michael Kebbekus <michael.kebbekus@goodeggs.com>"
+  ],
+  "license": "Private",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/goodeggs/goodeggs-formatters.git"
+  },
+  "homepage": "https://github.com/goodeggs/goodeggs-formatters",
+  "bugs": "https://github.com/goodeggs/goodeggs-formatters/issues",
+  "dependencies": {},
+  "devDependencies": {
+    "coffee-script": ">=1.8.x",
+    "mocha": "~1.x.x"
+  },
+  "scripts": {
+    "compile": "coffee --bare --compile --output lib/ src/",
+    "prepublish": "npm run compile",
+    "pretest": "npm run compile",
+    "test": "mocha"
+  },
+  "publishConfig": {
+    "registry": "https://goodeggs.registry.nodejitsu.com/",
+    "always-auth": true
+  }
+}
