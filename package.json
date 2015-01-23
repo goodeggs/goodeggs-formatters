@@ -4,7 +4,8 @@
   "description": "formatters for good eggs",
   "author": "Good Eggs <open-source@goodeggs.com>",
   "contributors": [
-    "Michael Kebbekus <michael.kebbekus@goodeggs.com>"
+    "Michael Kebbekus <michael.kebbekus@goodeggs.com>",
+    "Michelle Becker <michelle.becker@goodeggs.com>"
   ],
   "license": "Private",
   "main": "lib/index.js",
@@ -14,10 +15,20 @@
   },
   "homepage": "https://github.com/goodeggs/goodeggs-formatters",
   "bugs": "https://github.com/goodeggs/goodeggs-formatters/issues",
-  "dependencies": {},
+  "dependencies": {
+    "format-location": "^1.0.1",
+    "node-clock": "git+https://github.com/goodeggs/node-clock.git#master",
+    "fraction.js": "^1.3.0",
+    "accounting": "^0.4.1",
+    "getto": "0.0.2",
+    "underscore": "^1.7.0",
+    "inflect": "^0.3.0"
+  },
   "devDependencies": {
     "coffee-script": ">=1.8.x",
-    "mocha": "~1.x.x"
+    "mocha": "~1.x.x",
+    "chai": "^1.10.0",
+    "sinon": "^1.12.2"
   },
   "scripts": {
     "compile": "coffee --bare --compile --output lib/ src/",
