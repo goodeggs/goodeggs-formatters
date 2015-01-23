@@ -167,7 +167,7 @@ integer = /^(\d+)/
 
 
 formatPromoCodeValue = (promoCode) ->
-  getto(promoCode)
+  getto(promoCode) unless promoCode.get?
 
   switch promoCode.get('type')
     when 'dollar'
@@ -182,7 +182,7 @@ formatCustomerName = ({firstName, lastName}) ->
 
 formatProductName = (productOrLineItem, options = {}) ->
   {variant, excludeProductName, pickupDate} = options
-  getto(productOrLineItem)
+  getto(productOrLineItem) unless productOrLineItem.get?
 
   throw new Error('product must implement ofTheIsAvailableFor()') unless productOrLineItem.ofTheIsAvailableFor
 
@@ -245,22 +245,22 @@ formatDeliveryWindow = (pickupWindow, tzid) ->
   "#{formatDate(pickupWindow.startAt, 'clockTime', tzid)}-#{formatDate(pickupWindow.endAt, 'clockTime', tzid)}"
 
 module.exports =
-  formatNumber: accounting.formatNumber
-  formatMoney: formatMoney
-  formatPercentage: formatPercentage
-  formatDate: formatDate
-  formatDateRange: formatDateRange
-  formatTimeRange: formatTimeRange
-  formatPromoCodeValue: formatPromoCodeValue
   formatCardExpiration: formatCardExpiration
   formatCreditCard: formatCreditCard
-  normalizePhone: normalizePhone
-  formatPhone: formatPhone
   formatCustomerName: formatCustomerName
-  formatProductName: formatProductName
-  formatLocation: formatLocation
+  formatDate: formatDate
+  formatDateRange: formatDateRange
   formatDay: formatDay
-  normalizeZip: normalizeZip
   formatDeliveryWindow: formatDeliveryWindow
+  formatLocation: formatLocation
+  formatMoney: formatMoney
+  formatNumber: accounting.formatNumber
+  formatPercentage: formatPercentage
+  formatPhone: formatPhone
+  formatProductName: formatProductName
+  formatPromoCodeValue: formatPromoCodeValue
+  formatTimeRange: formatTimeRange
+  normalizePhone: normalizePhone
+  normalizeZip: normalizeZip
   unformat: unformat
 
