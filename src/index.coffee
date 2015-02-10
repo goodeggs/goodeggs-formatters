@@ -184,8 +184,6 @@ formatProductName = (productOrLineItem, options = {}) ->
   {variant, excludeProductName, pickupDate} = options
   getto(productOrLineItem) unless productOrLineItem.get?
 
-  throw new Error('product must implement ofTheIsAvailableFor()') unless productOrLineItem.ofTheIsAvailableFor
-
   if variant is 'stack'
     productOrLineItem.get('stackName')
   else if productOrLineItem.ofTheIsAvailableFor?({pickupDate}) and productOrLineItem.get('ofThe.name')?

@@ -2,7 +2,7 @@
 
 formatters for good eggs
 
-[![Build Status](https://magnum.travis-ci.com/goodeggs/goodeggs-formatters.png)](https://magnum.travis-ci.com/goodeggs/goodeggs-formatters)
+[![Build Status](http://img.shields.io/travis/goodeggs/goodeggs-formatters.svg?style=flat-square)](https://travis-ci.org/goodeggs/goodeggs-formatters)
 
 
 ## Usage
