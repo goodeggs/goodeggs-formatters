@@ -21,6 +21,9 @@ describe 'goodeggs-formatters', ->
     expect(f.formatDay('2014-12-09', 'shortShoppingDay')).to.eql 'Tue 12/9'
     expect(f.formatDay('2014-12-31', 'shortShoppingDay')).to.eql 'Wed 12/31'
 
+  it 'formatDate', ->
+    expect(f.formatDate('2014-3-8', 'mailChimpDate', clock.utc.tzid)).to.eql '03/08/2014'
+
   it 'normalizePhone', ->
     expect(f.normalizePhone(null)).to.eql ''
     expect(f.normalizePhone(undefined)).to.eql ''

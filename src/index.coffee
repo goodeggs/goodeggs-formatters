@@ -36,12 +36,13 @@ dateFormats =
   monthDay: '%-m/%-d'                       # 3/22
   longMonthDay: '%B %-d'                    # March 22
   shortDate: '%-m/%-d/%Y'                   # 3/22/2008
+  mailChimpDate: '%m/%d/%Y'                 # 03/22/2008
   shortDay:  '%A, %b %-d'                   # Saturday, Mar 22
   shorterDay:  '%a %b %-d'                  # Sat Mar 22
   longDay:  '%A, %B %-d, %Y'                # Saturday, March 22, 2008
   day:  '%B %-d, %Y'                        # March 22, 2008
   shoppingDay: '%A %-m/%-d'                 # Monday 10/14
-  shortShoppingDay: '%a %-m/%-d'      # Mon 10/14
+  shortShoppingDay: '%a %-m/%-d'            # Mon 10/14
   limitDay: '%m-%d-%Y (%a)'                 # 06-01-2014 (Sun)
   shortTime: (date, tzid) ->                # 5pm
     str = _formatDate(date, '%-l:%M%P', tzid)
