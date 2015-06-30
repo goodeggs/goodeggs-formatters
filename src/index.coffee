@@ -76,6 +76,10 @@ dateFormats =
     str = _formatDate date, "%A, %b ", tzid
     str += inflect.ordinalize(_formatDate(date, '%-d', tzid))
     return str
+  humanDate: (date, tzid) ->    # March 22nd
+    str = _formatDate date, "%B ", tzid
+    str += inflect.ordinalize(_formatDate(date, '%-d', tzid))
+    return str
   humanTime: '%-l:%M %P'
   year: '%Y'                                # 2014
 
@@ -262,4 +266,3 @@ module.exports =
   normalizePhone: normalizePhone
   normalizeZip: normalizeZip
   unformat: unformat
-

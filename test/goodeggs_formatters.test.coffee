@@ -166,6 +166,10 @@ describe 'goodeggs-formatters', ->
         }
           expect(f.formatDate(clock.tz(day, tzid), format, tzid)).to.eql weekday
 
+    describe 'humanDate', ->
+      it 'returns a full month name with ordinalized date', ->
+        expect(f.formatDate(date, 'humanDate', clock.pacific.tzid)).to.equal "March 8th"
+
   describe 'formatPromoCodeValue', ->
 
     describe 'a dollar promoCode', ->
