@@ -127,6 +127,10 @@ describe 'goodeggs-formatters', ->
     beforeEach ->
       date = clock.pacific '2012-03-08 17:00'
 
+    describe 'humanDate', ->
+      it 'returns a full month name with ordinalized date', ->
+        expect(f.formatDate(date, 'humanDate', clock.pacific.tzid)).to.equal "March 8th"
+
     describe 'humanWeekday', ->
       afterEach ->
         Date.now.restore?()
@@ -145,6 +149,21 @@ describe 'goodeggs-formatters', ->
     describe 'humanShortDay', ->
       it 'returns abbreviated month and ordinalized day', ->
         expect(f.formatDate(date, 'humanShortDay', clock.pacific.tzid)).to.eql 'Thursday, Mar 8th'
+
+    describe 'humanShoppingDay', ->
+      afterEach ->
+        Date.now.restore?()
+
+      it 'formats today', ->
+        sinon.stub(Date, 'now').returns clock.pacific('2012-03-08 12:00')
+        expect(f.formatDate(date, 'humanShoppingDay', clock.pacific.tzid)).to.eql 'today'
+
+      it 'formats tomorrow', ->
+        sinon.stub(Date, 'now').returns clock.pacific('2012-03-07 12:00')
+        expect(f.formatDate(date, 'humanShoppingDay', clock.pacific.tzid)).to.eql 'tomorrow'
+
+      it 'formats arbitrary weekdays', ->
+        expect(f.formatDate(date, 'humanShoppingDay', clock.pacific.tzid)).to.eql 'Thursday 3/8'
 
     describe 'shortShoppingDay', ->
       it 'returns a short shopping day', ->
@@ -165,10 +184,6 @@ describe 'goodeggs-formatters', ->
         '2013-09-07': 'SA'
         }
           expect(f.formatDate(clock.tz(day, tzid), format, tzid)).to.eql weekday
-
-    describe 'humanDate', ->
-      it 'returns a full month name with ordinalized date', ->
-        expect(f.formatDate(date, 'humanDate', clock.pacific.tzid)).to.equal "March 8th"
 
   describe 'formatPromoCodeValue', ->
 

@@ -64,6 +64,10 @@ dateFormats =
     _formatDate(date, '%a', tzid)[..1].toLowerCase()
   iCalWeekday: (date, tzid) ->              # MO, TU, WE
     formatDate(date, 'twoLetterDayOfTheWeek', tzid).toUpperCase()
+  humanDate: (date, tzid) ->    # March 22nd
+    str = _formatDate date, "%B ", tzid
+    str += inflect.ordinalize(_formatDate(date, '%-d', tzid))
+    return str
   humanWeekday: (date, tzid) ->             # today / tomorrow / Monday
     return "today" if _isToday(date, tzid)
     return "tomorrow" if _isTomorrow(date, tzid)
@@ -76,10 +80,10 @@ dateFormats =
     str = _formatDate date, "%A, %b ", tzid
     str += inflect.ordinalize(_formatDate(date, '%-d', tzid))
     return str
-  humanDate: (date, tzid) ->    # March 22nd
-    str = _formatDate date, "%B ", tzid
-    str += inflect.ordinalize(_formatDate(date, '%-d', tzid))
-    return str
+  humanShoppingDay: (date, tzid) ->         # today / tomorrow / Monday 7/25
+    return "today" if _isToday(date, tzid)
+    return "tomorrow" if _isTomorrow(date, tzid)
+    return formatDate(date, 'shoppingDay', tzid)
   humanTime: '%-l:%M %P'
   year: '%Y'                                # 2014
 
