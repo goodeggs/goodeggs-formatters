@@ -81,8 +81,8 @@ dateFormats =
     str += inflect.ordinalize(_formatDate(date, '%-d', tzid))
     return str
   humanShoppingDay: (date, tzid) ->         # today / tomorrow / Monday 7/25
-    return "today" if _isToday(date, tzid)
-    return "tomorrow" if _isTomorrow(date, tzid)
+    return "today " + formatDate(date, 'monthDay', tzid) if _isToday(date, tzid)
+    return "tomorrow " + formatDate(date, 'monthDay', tzid)  if _isTomorrow(date, tzid)
     return formatDate(date, 'shoppingDay', tzid)
   humanTime: '%-l:%M %P'
   year: '%Y'                                # 2014
