@@ -165,6 +165,22 @@ describe 'goodeggs-formatters', ->
       it 'formats arbitrary weekdays', ->
         expect(f.formatDate(date, 'humanShoppingDay', clock.pacific.tzid)).to.eql 'Thursday 3/8'
 
+    describe 'humanShortShoppingDay', ->
+      afterEach ->
+        Date.now.restore?()
+
+      it 'formats today', ->
+        sinon.stub(Date, 'now').returns clock.pacific('2012-03-08 12:00')
+        expect(f.formatDate(date, 'humanShortShoppingDay', clock.pacific.tzid)).to.eql 'today 3/8'
+
+      it 'formats tomorrow', ->
+        sinon.stub(Date, 'now').returns clock.pacific('2012-03-07 12:00')
+        expect(f.formatDate(date, 'humanShortShoppingDay', clock.pacific.tzid)).to.eql 'tomorrow 3/8'
+
+      it 'formats another day', ->
+        expect(f.formatDate(date, 'humanShortShoppingDay', clock.pacific.tzid)).to.eql 'Thu 3/8'
+
+
     describe 'shortShoppingDay', ->
       it 'returns a short shopping day', ->
         expect(f.formatDate(date, 'shortShoppingDay', clock.pacific.tzid)).to.eql 'Thu 3/8'

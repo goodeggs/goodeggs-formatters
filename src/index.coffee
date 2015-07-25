@@ -80,10 +80,14 @@ dateFormats =
     str = _formatDate date, "%A, %b ", tzid
     str += inflect.ordinalize(_formatDate(date, '%-d', tzid))
     return str
-  humanShoppingDay: (date, tzid) ->         # today / tomorrow / Monday 7/25
+  humanShoppingDay: (date, tzid) ->         # today 7/25 / tomorrow 7/25 / Monday 7/25
     return "today " + formatDate(date, 'monthDay', tzid) if _isToday(date, tzid)
     return "tomorrow " + formatDate(date, 'monthDay', tzid)  if _isTomorrow(date, tzid)
     return formatDate(date, 'shoppingDay', tzid)
+  humanShortShoppingDay: (date, tzid) ->         # today 7/23 / tomorrow 7/24 / Mon 7/25
+    return "today " + formatDate(date, 'monthDay', tzid) if _isToday(date, tzid)
+    return "tomorrow " + formatDate(date, 'monthDay', tzid)  if _isTomorrow(date, tzid)
+    return formatDate(date, 'shortShoppingDay', tzid)
   humanTime: '%-l:%M %P'
   year: '%Y'                                # 2014
 
