@@ -35,6 +35,7 @@ formatCreditCard = (card) ->
 dateFormats =
   monthDay: '%-m/%-d'                       # 3/22
   longMonthDay: '%B %-d'                    # March 22
+  shortMonthDay: '%b %-d'                   # Mar 22
   shortDate: '%-m/%-d/%Y'                   # 3/22/2008
   mailChimpDate: '%m/%d/%Y'                 # 03/22/2008
   shortDay:  '%A, %b %-d'                   # Saturday, Mar 22
