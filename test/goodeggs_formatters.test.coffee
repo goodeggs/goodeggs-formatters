@@ -201,6 +201,19 @@ describe 'goodeggs-formatters', ->
         }
           expect(f.formatDate(clock.tz(day, tzid), format, tzid)).to.eql weekday
 
+    describe 'shortTime', ->
+      it 'formats time', ->
+        date = clock.pacific '2012-03-08 17:00'
+        expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).to.eql '5pm'
+
+      it 'special cases 12:00pm', ->
+        date = clock.pacific '2012-03-08 12:00'
+        expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).to.eql 'noon'
+
+      it 'special cases 12:00am', ->
+        date = clock.pacific '2012-03-08 24:00'
+        expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).to.eql 'midnight'
+
   describe 'formatPromoCodeValue', ->
 
     describe 'a dollar promoCode', ->

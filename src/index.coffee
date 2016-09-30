@@ -47,7 +47,7 @@ dateFormats =
   limitDay: '%m-%d-%Y (%a)'                 # 06-01-2014 (Sun)
   shortTime: (date, tzid) ->                # 5pm
     str = _formatDate(date, '%-l:%M%P', tzid)
-    return str.replace('12:00pm', 'noon').replace(':00', '')
+    return str.replace('12:00pm', 'noon').replace('12:00am', 'midnight').replace(':00', '')
   shortDayTime: (date, tzid) ->             # Saturday, Mar 22, 5:00pm
     str = _formatDate(date, '%A, %b %-d, %-l:%M%P', tzid)
     return str.replace('12:00pm', 'noon').replace(':00', '')
