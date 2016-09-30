@@ -93,7 +93,7 @@ dateFormats =
   year: '%Y'                                # 2014
   orderCutoffDateTime: (date, tzid) ->
     # permutations are [10am, noon, midnight] [..., tomorrow, Wednesday]
-    isMidnight = new Date(date).getHours() == 0
+    isMidnight = formatDate(date, 'shortTime', tzid) == 'midnight'
     if isMidnight
       date = new Date(date) - 1.day()
     return formatDate(date, 'shortTime', tzid) if _isToday(date, tzid)
