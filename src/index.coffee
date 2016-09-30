@@ -91,6 +91,15 @@ dateFormats =
     return formatDate(date, 'shortShoppingDay', tzid)
   humanTime: '%-l:%M %P'
   year: '%Y'                                # 2014
+  orderCutoffDateTime: (date, tzid) ->
+    # permutations are [10am, noon, midnight] [..., tomorrow, Wednesday]
+    isMidnight = new Date(date).getHours() == 0
+    if isMidnight
+      date = new Date(date) - 1.day()
+    return formatDate(date, 'shortTime', tzid) if _isToday(date, tzid)
+    return "#{ formatDate(date, 'shortTime', tzid) } tomorrow"  if _isTomorrow(date, tzid)
+    return "#{ formatDate(date, 'shortTime', tzid) } #{ formatDate(date, 'humanWeekday', tzid) }"
+
 
 formatDate = (date, formatString, tzid) ->
   throw new Error('tzid is required') if not tzid?

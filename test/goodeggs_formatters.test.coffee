@@ -214,6 +214,43 @@ describe 'goodeggs-formatters', ->
         date = clock.pacific '2012-03-08 24:00'
         expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).to.eql 'midnight'
 
+    describe 'orderCutoffDateTime', ->
+      it 'formats time', ->
+        date = clock.pacific '2012-03-08 17:00'
+        sinon.stub(clock, 'now').returns clock.pacific('2012-03-08')
+        expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql '5pm'
+        clock.now.restore()
+        sinon.stub(clock, 'now').returns clock.pacific('2012-03-07')
+        expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql '5pm tomorrow'
+        clock.now.restore()
+        sinon.stub(clock, 'now').returns clock.pacific('2012-03-06')
+        expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql '5pm Thursday'
+        clock.now.restore()
+
+      it 'special cases 12:00pm', ->
+        date = clock.pacific '2012-03-08 12:00'
+        sinon.stub(clock, 'now').returns clock.pacific('2012-03-08')
+        expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).to.eql 'noon'
+        clock.now.restore()
+        sinon.stub(clock, 'now').returns clock.pacific('2012-03-07')
+        expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql 'noon tomorrow'
+        clock.now.restore()
+        sinon.stub(clock, 'now').returns clock.pacific('2012-03-06')
+        expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql 'noon Thursday'
+        clock.now.restore()
+
+      it 'special cases 12:00am', ->
+        date = clock.pacific '2012-03-08 24:00'
+        sinon.stub(clock, 'now').returns clock.pacific('2012-03-08')
+        expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql 'midnight'
+        clock.now.restore()
+        sinon.stub(clock, 'now').returns clock.pacific('2012-03-07')
+        expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql 'midnight tomorrow'
+        clock.now.restore()
+        sinon.stub(clock, 'now').returns clock.pacific('2012-03-06')
+        expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql 'midnight Thursday'
+        clock.now.restore()
+
   describe 'formatPromoCodeValue', ->
 
     describe 'a dollar promoCode', ->
