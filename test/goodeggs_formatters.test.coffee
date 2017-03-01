@@ -12,14 +12,25 @@ describe 'goodeggs-formatters', ->
     expect(f.formatPhone('415')).to.eql '415'
     expect(f.formatPhone('+14153208262')).to.eql '415-320-8262'
 
-  it 'formatDay', ->
-    expect(f.formatDay('2014-11-29', 'shortShoppingDay')).to.eql 'Sat 11/29'
-    expect(f.formatDay('2014-1-1', 'shortShoppingDay')).to.eql 'Wed 1/1'
-    expect(f.formatDay('2014-01-1', 'shortShoppingDay')).to.eql 'Wed 1/1'
-    expect(f.formatDay('2014-01-01', 'shortShoppingDay')).to.eql 'Wed 1/1'
-    expect(f.formatDay('2014-1-01', 'shortShoppingDay')).to.eql 'Wed 1/1'
-    expect(f.formatDay('2014-12-09', 'shortShoppingDay')).to.eql 'Tue 12/9'
-    expect(f.formatDay('2014-12-31', 'shortShoppingDay')).to.eql 'Wed 12/31'
+  describe 'formatDay', ->
+    describe 'shortShoppingDay', ->
+      it 'formats correctly', ->
+        expect(f.formatDay('2014-11-29', 'shortShoppingDay')).to.eql 'Sat 11/29'
+        expect(f.formatDay('2014-1-1', 'shortShoppingDay')).to.eql 'Wed 1/1'
+        expect(f.formatDay('2014-01-1', 'shortShoppingDay')).to.eql 'Wed 1/1'
+        expect(f.formatDay('2014-01-01', 'shortShoppingDay')).to.eql 'Wed 1/1'
+        expect(f.formatDay('2014-1-01', 'shortShoppingDay')).to.eql 'Wed 1/1'
+        expect(f.formatDay('2014-12-09', 'shortShoppingDay')).to.eql 'Tue 12/9'
+        expect(f.formatDay('2014-12-31', 'shortShoppingDay')).to.eql 'Wed 12/31'
+
+    describe 'shortMonthDay', ->
+      it 'formats correctly', ->
+        expect(f.formatDay('2014-12-31', 'shortMonthDay')).to.eql 'Dec 31'
+        expect(f.formatDay('2017-02-01', 'shortMonthDay')).to.eql 'Feb 1'
+
+    describe 'twoLetterDayOfTheWeek', ->
+      it 'formats correctly', ->
+        expect(f.formatDay('2017-02-01', 'twoLetterDayOfTheWeek')).to.eql 'we'
 
   it 'formatDate', ->
     expect(f.formatDate('2014-3-8', 'mailChimpDate', clock.utc.tzid)).to.eql '03/08/2014'

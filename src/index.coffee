@@ -229,11 +229,15 @@ dayFormats =
 
 # formats day strings in the format of: 2014-08-15
 formatDay = (day, formatString) ->
-  return day if !dayFormats[formatString] or !day
+  formats = _.extend {}, dateFormats, dayFormats
+  return day if !formats[formatString] or !day
   parts = day.match /^(\d{4})\-(\d{1,2})\-(\d{1,2})$/
   return day if !parts
   date = new Date(+parts[1], +parts[2] - 1, +parts[3])
-  dayFormats[formatString](date)
+  format = formats[formatString]
+  tzid = clock.utc.tzid
+  return _isFunction(format) and format(date, tzid) or _formatDate(date, format, tzid)
+
 
 normalizePhone = (phone) ->
   if phone?
