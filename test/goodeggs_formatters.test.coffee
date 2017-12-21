@@ -12,6 +12,22 @@ describe 'goodeggs-formatters', ->
     expect(f.formatPhone('415')).to.eql '415'
     expect(f.formatPhone('+14153208262')).to.eql '415-320-8262'
 
+  describe 'formatCreditCard', ->
+    it 'works', ->
+      expect(f.formatCreditCard({
+        type: 'visa'
+        last4: '4242'
+        exp_month: '6'
+        exp_year: '2020'
+      })).to.eql 'VISA 4242 exp 06/20'
+
+    it 'leaves out the type if it doesnt exist', ->
+      expect(f.formatCreditCard({
+        last4: '4242'
+        exp_month: '6'
+        exp_year: '2020'
+      })).to.eql '4242 exp 06/20'
+
   describe 'formatDay', ->
     describe 'shortShoppingDay', ->
       it 'formats correctly', ->

@@ -30,7 +30,9 @@ formatCardExpiration = (month, year) ->
   "#{('0' + month)[-2..]}/#{(''+year)[-2..]}"
 
 formatCreditCard = (card) ->
-  "#{card.type.toUpperCase()} #{card.last4} exp #{formatCardExpiration(card.exp_month, card.exp_year)}"
+  if card.type
+    type = "#{card.type.toUpperCase()} "
+  "#{type ? ''}#{card.last4} exp #{formatCardExpiration(card.exp_month, card.exp_year)}"
 
 dateFormats =
   monthDay: '%-m/%-d'                       # 3/22
