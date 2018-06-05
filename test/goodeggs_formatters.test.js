@@ -60,15 +60,22 @@ describe('goodeggs-formatters', function() {
 
   it('formatDate', () => expect(f.formatDate('2014-3-8', 'mailChimpDate', clock.utc.tzid)).to.eql('03/08/2014'));
 
-  it('normalizePhone', function() {
-    expect(f.normalizePhone(null)).to.eql('');
-    expect(f.normalizePhone(undefined)).to.eql('');
-    expect(f.normalizePhone('')).to.eql('');
-    expect(f.normalizePhone('415')).to.eql('+1415');
-    expect(f.normalizePhone('1234567890')).to.eql('+11234567890');
-    expect(f.normalizePhone('4153208262')).to.eql('+14153208262');
-    expect(f.normalizePhone('14153208262')).to.eql('+14153208262');
-    expect(f.normalizePhone('+14153208262')).to.eql('+14153208262');
+  describe('normalize phone', function() {
+    it('defaults to US numbers', function() {
+      expect(f.normalizePhone(null)).to.eql('');
+      expect(f.normalizePhone(undefined)).to.eql('');
+      expect(f.normalizePhone('')).to.eql('');
+      expect(f.normalizePhone('415')).to.eql('+1415');
+      expect(f.normalizePhone('1234567890')).to.eql('+11234567890');
+      expect(f.normalizePhone('4153208262')).to.eql('+14153208262');
+      expect(f.normalizePhone('14153208262')).to.eql('+14153208262');
+      expect(f.normalizePhone('+14153208262')).to.eql('+14153208262');
+    });
+
+    it('does not change international numbers', function () {
+      expect(f.normalizePhone('+33929598762')).to.eql('+33929598762');
+      expect(f.normalizePhone('+4773226363')).to.eql('+4773226363');
+    });
   });
 
   it('normalizeZip', function() {
