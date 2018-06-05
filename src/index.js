@@ -266,17 +266,15 @@ const formatDay = function(day, formatString) {
 
 
 const normalizePhone = function(phone) {
-  if (phone != null) {
-    let normalizedPhone = phone.replace(/[^\d]/g, '');
-
-    if (phone === '') { return ''; }
-
-    if (normalizedPhone.length !== 11) { normalizedPhone = `1${normalizedPhone}`; }
-
-    return `+${normalizedPhone}`;
-  } else {
+  if (!phone) {
     return '';
   }
+
+  const digits = phone.replace(/[^\d]/g, '');
+  const hasCountryCode = /^\s*\+/.test(phone) || digits.length === 11 && digits[0] === '1';
+  const prefix = hasCountryCode ? '+' : '+1'; // presume US unless specified
+
+  return `${prefix}${digits}`;
 };
 
 const formatPhone = function(str) {
