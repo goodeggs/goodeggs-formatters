@@ -25,13 +25,25 @@
     "inflect": "^0.3.0"
   },
   "devDependencies": {
-    "coffee-script": ">=1.8.x",
-    "mocha": "~1.x.x",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-es2015": "^6.24.1",
     "chai": "^1.10.0",
+    "mocha": "~1.x.x",
     "sinon": "^1.12.2"
   },
+  "engines": {
+    "node": "8.11.1",
+    "npm": "3.9.6"
+  },
+  "babel": {
+    "sourceMaps": "inline",
+    "presets": [
+      "es2015"
+    ]
+  },
   "scripts": {
-    "compile": "coffee --bare --compile --output lib/ src/",
+    "compile": "babel -d lib/ src/",
     "prepublish": "npm run compile",
     "pretest": "npm run compile",
     "test": "mocha"

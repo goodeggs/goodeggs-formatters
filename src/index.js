@@ -1,20 +1,12 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
-const _ = require('underscore');
-const clock = require('node-clock');
+import accounting from 'accounting';
+import formatLocation from 'format-location';
+import {Fraction} from 'fraction.js';
+import getto from 'getto';
+import inflect from 'inflect';
+import clock from 'node-clock';
+import _ from 'underscore';
+
 clock.extendNumber();
-const formatLocation = require('format-location');
-const accounting = require('accounting');
-const getto = require('getto');
-const {Fraction} = require('fraction.js');
-const inflect = require('inflect');
 
 // Customize negative currency formatting: -$5.00
 accounting.settings.currency.format = {
@@ -128,7 +120,7 @@ const dateFormats = {
 };
 
 
-var formatDate = function(date, formatString, tzid) {
+const formatDate = function(date, formatString, tzid) {
   if ((tzid == null)) { throw new Error('tzid is required'); }
   if ((date == null)) { return null; }
   date = new Date(date);
@@ -138,22 +130,17 @@ var formatDate = function(date, formatString, tzid) {
 
 const sameDay = (date1, date2, tzid) => formatDate(date1, 'clockDate', tzid) === formatDate(date2, 'clockDate', tzid);
 
-var _isFunction = fn => typeof(fn) === 'function';
+const _isFunction = fn => typeof(fn) === 'function';
 
-var _formatDate = (date, format, tzid) => clock.tz(date.valueOf(), format, tzid);
+const _formatDate = (date, format, tzid) => clock.tz(date.valueOf(), format, tzid);
 
-var _isToday = (date, tzid) => sameDay(date, clock.now(), tzid);
+const _isToday = (date, tzid) => sameDay(date, clock.now(), tzid);
 
-var _isTomorrow = function(date, tzid) {
+const _isTomorrow = function(date, tzid) {
   // Can't use date math on client :(
   // Add one day
   const tomorrow = clock.now() + (1).day();
   return sameDay(date, tomorrow, tzid);
-};
-
-const isStartOfDay = function(dateIn, tzid) {
-  const date = (dateIn instanceof Date && dateIn) || new Date(dateIn);
-  return date.getTime() === extras.dateAtStartOfDay(date, tzid).getTime();
 };
 
 const formatDateRange = function(startAt, endAt, tzid, options) {
@@ -186,7 +173,7 @@ const formatDateRange = function(startAt, endAt, tzid, options) {
   return `${formatDate(startAt, 'shortDayTime', tzid)}${separator}${formatDate(endAt, 'shortDayTime', tzid)}`;
 };
 
-var _formatDay = function(date, tzid) {
+const _formatDay = function(date, tzid) {
   if (_isToday(date, tzid)) {
     return "today";
   } else if (_isTomorrow(date, tzid)) {
@@ -196,7 +183,7 @@ var _formatDay = function(date, tzid) {
   }
 };
 
-var formatTimeRange = function(startAt, endAt, tzid, options) {
+const formatTimeRange = function(startAt, endAt, tzid, options) {
   if (startAt == null) { return null; }
 
   // Accept an object with startAt and endAt keys
@@ -217,13 +204,6 @@ var formatTimeRange = function(startAt, endAt, tzid, options) {
     return `${startStr}${separator}${endStr}`;
   }
 };
-
-const mixedFraction = /^(\d+)\s+(\d+)\/(\d+)/;
-const fraction = /^(\d+)\/(\d+)/;
-const decimal = /^(\d*\.\d+)/;
-const integer = /^(\d+)/;
-
-
 
 const formatPromoCodeValue = function(promoCode) {
   if (promoCode.get == null) { getto(promoCode); }
@@ -276,7 +256,7 @@ const dayFormats = {
 const formatDay = function(day, formatString) {
   const formats = _.extend({}, dateFormats, dayFormats);
   if (!formats[formatString] || !day) { return day; }
-  const parts = day.match(/^(\d{4})\-(\d{1,2})\-(\d{1,2})$/);
+  const parts = day.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
   if (!parts) { return day; }
   const date = new Date(+parts[1], +parts[2] - 1, +parts[3]);
   const format = formats[formatString];

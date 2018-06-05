@@ -1,15 +1,8 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS205: Consider reworking code to avoid use of IIFEs
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
-const f = require('..');
-const clock = require('node-clock');
-const sinon = require('sinon');
-const {expect} = require('chai');
+import {expect} from 'chai';
+import clock from 'node-clock';
+import sinon from 'sinon';
+
+import f from '..';
 
 describe('goodeggs-formatters', function() {
 
@@ -18,7 +11,7 @@ describe('goodeggs-formatters', function() {
     expect(f.formatPhone(undefined)).to.eql(undefined);
     expect(f.formatPhone('')).to.eql('');
     expect(f.formatPhone('415')).to.eql('415');
-    return expect(f.formatPhone('+14153208262')).to.eql('415-320-8262');
+    expect(f.formatPhone('+14153208262')).to.eql('415-320-8262');
   });
 
   describe('formatCreditCard', function() {
@@ -31,7 +24,7 @@ describe('goodeggs-formatters', function() {
       })).to.eql('VISA 4242 exp 06/20')
     );
 
-    return it('leaves out the type if it doesnt exist', () =>
+    it('leaves out the type if it doesnt exist', () =>
       expect(f.formatCreditCard({
         last4: '4242',
         exp_month: '6',
@@ -49,18 +42,18 @@ describe('goodeggs-formatters', function() {
         expect(f.formatDay('2014-01-01', 'shortShoppingDay')).to.eql('Wed 1/1');
         expect(f.formatDay('2014-1-01', 'shortShoppingDay')).to.eql('Wed 1/1');
         expect(f.formatDay('2014-12-09', 'shortShoppingDay')).to.eql('Tue 12/9');
-        return expect(f.formatDay('2014-12-31', 'shortShoppingDay')).to.eql('Wed 12/31');
+        expect(f.formatDay('2014-12-31', 'shortShoppingDay')).to.eql('Wed 12/31');
       })
     );
 
     describe('shortMonthDay', () =>
       it('formats correctly', function() {
         expect(f.formatDay('2014-12-31', 'shortMonthDay')).to.eql('Dec 31');
-        return expect(f.formatDay('2017-02-01', 'shortMonthDay')).to.eql('Feb 1');
+        expect(f.formatDay('2017-02-01', 'shortMonthDay')).to.eql('Feb 1');
       })
     );
 
-    return describe('twoLetterDayOfTheWeek', () =>
+    describe('twoLetterDayOfTheWeek', () =>
       it('formats correctly', () => expect(f.formatDay('2017-02-01', 'twoLetterDayOfTheWeek')).to.eql('we'))
     );
   });
@@ -75,7 +68,7 @@ describe('goodeggs-formatters', function() {
     expect(f.normalizePhone('1234567890')).to.eql('+11234567890');
     expect(f.normalizePhone('4153208262')).to.eql('+14153208262');
     expect(f.normalizePhone('14153208262')).to.eql('+14153208262');
-    return expect(f.normalizePhone('+14153208262')).to.eql('+14153208262');
+    expect(f.normalizePhone('+14153208262')).to.eql('+14153208262');
   });
 
   it('normalizeZip', function() {
@@ -85,7 +78,7 @@ describe('goodeggs-formatters', function() {
     expect(f.normalizeZip('12345-2')).to.eql('12345');
     expect(f.normalizeZip('12345-1234')).to.eql('12345');
     expect(f.normalizeZip('12345-N(*&N(')).to.eql('12345');
-    return expect(f.normalizeZip('   12345-N(*&N(')).to.eql('12345');
+    expect(f.normalizeZip('   12345-N(*&N(')).to.eql('12345');
   });
 
   describe('formatMoney', function() {
@@ -95,16 +88,16 @@ describe('goodeggs-formatters', function() {
       expect(f.formatMoney(40.000000000003)).to.eql('$40.00');
       expect(f.formatMoney(39.999999999993)).to.eql('$40.00');
       expect(f.formatMoney(-42.5)).to.eql('-$42.50');
-      return expect(f.formatMoney(0)).to.eql('$0.00');
+      expect(f.formatMoney(0)).to.eql('$0.00');
     });
 
-    return it('with wholeNumberPrecision', function() {
+    it('with wholeNumberPrecision', function() {
       expect(f.formatMoney(40.5, {wholeNumberPrecision: 0})).to.eql('$40.50');
       expect(f.formatMoney(40, {wholeNumberPrecision: 0})).to.eql('$40');
       expect(f.formatMoney(40.000000000003, {wholeNumberPrecision: 0})).to.eql('$40');
       expect(f.formatMoney(39.999999999993, {wholeNumberPrecision: 0})).to.eql('$40');
       expect(f.formatMoney(-42.5, {wholeNumberPrecision: 0})).to.eql('-$42.50');
-      return expect(f.formatMoney(0, {wholeNumberPrecision: 0})).to.eql('$0');
+      expect(f.formatMoney(0, {wholeNumberPrecision: 0})).to.eql('$0');
     });
   });
 
@@ -113,7 +106,7 @@ describe('goodeggs-formatters', function() {
     expect(f.formatCustomerName({firstName: 'john  ', lastName: undefined})).to.eql('john');
     expect(f.formatCustomerName({firstName: 'john', lastName: 'smIth'})).to.eql('john smIth');
     expect(f.formatCustomerName({firstName: undefined, lastName: 'Smith'})).to.eql('Smith');
-    return expect(f.formatCustomerName({firstName: '  John  ', lastName: '  Smith  '})).to.eql('John Smith');
+    expect(f.formatCustomerName({firstName: '  John  ', lastName: '  Smith  '})).to.eql('John Smith');
   });
 
   describe('formatProductName', function() {
@@ -139,16 +132,16 @@ describe('goodeggs-formatters', function() {
 
       it('falls back to product name when options for includeOfThe is false', function() {
         product.ofTheIsAvailableFor = () => false;
-        return expect(f.formatProductName(product)).to.eql('Muffin of the Week');
+        expect(f.formatProductName(product)).to.eql('Muffin of the Week');
       });
 
-      return it('includes ofThe name when options for includeOfThe is true', function() {
+      it('includes ofThe name when options for includeOfThe is true', function() {
         product.ofTheIsAvailableFor = () => true;
-        return expect(f.formatProductName(product)).to.eql('Muffin of the Week: Banana Muffin');
+        expect(f.formatProductName(product)).to.eql('Muffin of the Week: Banana Muffin');
       });
     });
 
-    return describe('product with ofThe product when ofThe name is empty', function() {
+    describe('product with ofThe product when ofThe name is empty', function() {
       beforeEach(() =>
         product.ofThe = {
           enabled: true,
@@ -156,7 +149,7 @@ describe('goodeggs-formatters', function() {
         }
       );
 
-      return it('falls back to product name', () => expect(f.formatProductName(product)).to.eql('Muffin of the Week'));
+      it('falls back to product name', () => expect(f.formatProductName(product)).to.eql('Muffin of the Week'));
     });
   });
 
@@ -165,22 +158,22 @@ describe('goodeggs-formatters', function() {
     it('formats a date range of different dates', function() {
       const startAt = clock.pacific('2012-03-11 09:00');
       const endAt = clock.pacific('2012-03-13 09:00');
-      return expect(f.formatDateRange(startAt, endAt, clock.pacific.tzid)).to.eql('Sunday, Mar 11, 9am - Tuesday, Mar 13, 9am');
+      expect(f.formatDateRange(startAt, endAt, clock.pacific.tzid)).to.eql('Sunday, Mar 11, 9am - Tuesday, Mar 13, 9am');
     });
 
     it('formats a date range of the same day', function() {
       const startAt = clock.pacific('2012-03-11 09:00');
       const endAt = clock.pacific('2012-03-11 19:20');
-      return expect(f.formatDateRange(startAt, endAt, clock.pacific.tzid)).to.eql('Sunday, Mar 11, 9am - 7:20pm');
+      expect(f.formatDateRange(startAt, endAt, clock.pacific.tzid)).to.eql('Sunday, Mar 11, 9am - 7:20pm');
     });
 
-    return it('formats a date range object', function() {
+    it('formats a date range object', function() {
       const range = {
         startAt: clock.pacific('2012-03-11 09:00'),
         endAt: clock.pacific('2012-03-13 09:00')
       };
       expect(f.formatDateRange(range, clock.pacific.tzid)).to.eql('Sunday, Mar 11, 9am - Tuesday, Mar 13, 9am');
-      return expect(f.formatDateRange(range, clock.pacific.tzid, {separator: ' to '})).to.eql('Sunday, Mar 11, 9am to Tuesday, Mar 13, 9am');
+      expect(f.formatDateRange(range, clock.pacific.tzid, {separator: ' to '})).to.eql('Sunday, Mar 11, 9am to Tuesday, Mar 13, 9am');
     });
   });
 
@@ -197,15 +190,15 @@ describe('goodeggs-formatters', function() {
 
       it('formats today', function() {
         sinon.stub(Date, 'now').returns(clock.pacific('2012-03-08 12:00'));
-        return expect(f.formatDate(date, 'humanWeekday', clock.pacific.tzid)).to.eql('today');
+        expect(f.formatDate(date, 'humanWeekday', clock.pacific.tzid)).to.eql('today');
       });
 
       it('formats tomorrow', function() {
         sinon.stub(Date, 'now').returns(clock.pacific('2012-03-07 12:00'));
-        return expect(f.formatDate(date, 'humanWeekday', clock.pacific.tzid)).to.eql('tomorrow');
+        expect(f.formatDate(date, 'humanWeekday', clock.pacific.tzid)).to.eql('tomorrow');
       });
 
-      return it('formats arbitrary weekdays', () => expect(f.formatDate(date, 'humanWeekday', clock.pacific.tzid)).to.eql('Thursday'));
+      it('formats arbitrary weekdays', () => expect(f.formatDate(date, 'humanWeekday', clock.pacific.tzid)).to.eql('Thursday'));
     });
 
     describe('humanShortDay', () =>
@@ -217,15 +210,15 @@ describe('goodeggs-formatters', function() {
 
       it('formats today', function() {
         sinon.stub(Date, 'now').returns(clock.pacific('2012-03-08 12:00'));
-        return expect(f.formatDate(date, 'humanShoppingDay', clock.pacific.tzid)).to.eql('today 3/8');
+        expect(f.formatDate(date, 'humanShoppingDay', clock.pacific.tzid)).to.eql('today 3/8');
       });
 
       it('formats tomorrow', function() {
         sinon.stub(Date, 'now').returns(clock.pacific('2012-03-07 12:00'));
-        return expect(f.formatDate(date, 'humanShoppingDay', clock.pacific.tzid)).to.eql('tomorrow 3/8');
+        expect(f.formatDate(date, 'humanShoppingDay', clock.pacific.tzid)).to.eql('tomorrow 3/8');
       });
 
-      return it('formats arbitrary weekdays', () => expect(f.formatDate(date, 'humanShoppingDay', clock.pacific.tzid)).to.eql('Thursday 3/8'));
+      it('formats arbitrary weekdays', () => expect(f.formatDate(date, 'humanShoppingDay', clock.pacific.tzid)).to.eql('Thursday 3/8'));
     });
 
     describe('humanShortShoppingDay', function() {
@@ -233,15 +226,15 @@ describe('goodeggs-formatters', function() {
 
       it('formats today', function() {
         sinon.stub(Date, 'now').returns(clock.pacific('2012-03-08 12:00'));
-        return expect(f.formatDate(date, 'humanShortShoppingDay', clock.pacific.tzid)).to.eql('today 3/8');
+        expect(f.formatDate(date, 'humanShortShoppingDay', clock.pacific.tzid)).to.eql('today 3/8');
       });
 
       it('formats tomorrow', function() {
         sinon.stub(Date, 'now').returns(clock.pacific('2012-03-07 12:00'));
-        return expect(f.formatDate(date, 'humanShortShoppingDay', clock.pacific.tzid)).to.eql('tomorrow 3/8');
+        expect(f.formatDate(date, 'humanShortShoppingDay', clock.pacific.tzid)).to.eql('tomorrow 3/8');
       });
 
-      return it('formats another day', () => expect(f.formatDate(date, 'humanShortShoppingDay', clock.pacific.tzid)).to.eql('Thu 3/8'));
+      it('formats another day', () => expect(f.formatDate(date, 'humanShortShoppingDay', clock.pacific.tzid)).to.eql('Thu 3/8'));
     });
 
 
@@ -254,44 +247,38 @@ describe('goodeggs-formatters', function() {
         const format = 'iCalWeekday';
         const { tzid } = clock.pacific;
 
-        return (() => {
-          const result = [];
-          const object = {
-        '2013-09-01': 'SU',
-        '2013-09-02': 'MO',
-        '2013-09-03': 'TU',
-        '2013-09-04': 'WE',
-        '2013-09-05': 'TH',
-        '2013-09-06': 'FR',
-        '2013-09-07': 'SA'
-        };
-          for (let day in object) {
-            const weekday = object[day];
-            result.push(expect(f.formatDate(clock.tz(day, tzid), format, tzid)).to.eql(weekday));
-          }
-          return result;
-        })();
+        for (const [day, weekday] of Object.entries({
+          '2013-09-01': 'SU',
+          '2013-09-02': 'MO',
+          '2013-09-03': 'TU',
+          '2013-09-04': 'WE',
+          '2013-09-05': 'TH',
+          '2013-09-06': 'FR',
+          '2013-09-07': 'SA'
+        })) {
+          expect(f.formatDate(clock.tz(day, tzid), format, tzid)).to.eql(weekday);
+        }
       })
     );
 
     describe('shortTime', function() {
       it('formats time', function() {
         date = clock.pacific('2012-03-08 17:00');
-        return expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).to.eql('5pm');
+        expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).to.eql('5pm');
       });
 
       it('special cases 12:00pm', function() {
         date = clock.pacific('2012-03-08 12:00');
-        return expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).to.eql('noon');
+        expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).to.eql('noon');
       });
 
-      return it('special cases 12:00am', function() {
+      it('special cases 12:00am', function() {
         date = clock.pacific('2012-03-08 24:00');
-        return expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).to.eql('midnight');
+        expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).to.eql('midnight');
       });
     });
 
-    return describe('orderCutoffDateTime', function() {
+    describe('orderCutoffDateTime', function() {
       it('formats time', function() {
         date = clock.pacific('2012-03-08 17:00');
         sinon.stub(clock, 'now').returns(clock.pacific('2012-03-08'));
@@ -302,7 +289,7 @@ describe('goodeggs-formatters', function() {
         clock.now.restore();
         sinon.stub(clock, 'now').returns(clock.pacific('2012-03-06'));
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('5pm Thursday');
-        return clock.now.restore();
+        clock.now.restore();
       });
 
       it('special cases 12:00pm', function() {
@@ -315,10 +302,10 @@ describe('goodeggs-formatters', function() {
         clock.now.restore();
         sinon.stub(clock, 'now').returns(clock.pacific('2012-03-06'));
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('noon Thursday');
-        return clock.now.restore();
+        clock.now.restore();
       });
 
-      return it('special cases 12:00am', function() {
+      it('special cases 12:00am', function() {
         date = clock.pacific('2012-03-08 24:00');
         sinon.stub(clock, 'now').returns(clock.pacific('2012-03-08'));
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('midnight');
@@ -328,7 +315,7 @@ describe('goodeggs-formatters', function() {
         clock.now.restore();
         sinon.stub(clock, 'now').returns(clock.pacific('2012-03-06'));
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('midnight Thursday');
-        return clock.now.restore();
+        clock.now.restore();
       });
     });
   });
@@ -344,10 +331,10 @@ describe('goodeggs-formatters', function() {
         }
       );
 
-      return it('formats as money', () => expect(f.formatPromoCodeValue(promoCode)).to.eql('$5'));
+      it('formats as money', () => expect(f.formatPromoCodeValue(promoCode)).to.eql('$5'));
     });
 
-    return describe('a percent promoCode', function() {
+    describe('a percent promoCode', function() {
       let promoCode = null;
       beforeEach(() =>
         promoCode = {
@@ -356,14 +343,14 @@ describe('goodeggs-formatters', function() {
         }
       );
 
-      return it('formats as a precentage', () => expect(f.formatPromoCodeValue(promoCode)).to.eql('5%'));
+      it('formats as a precentage', () => expect(f.formatPromoCodeValue(promoCode)).to.eql('5%'));
     });
   });
 
-  return describe('formatLocation', () =>
+  describe('formatLocation', () =>
     it('formats the full address', function() {
       const location = {name: 'Good Eggs HQ', address: '530 Hampshire Street', address2: 'Suite 301', city: 'San Francisco', state: 'CA', zip: '94110'};
-      return expect(f.formatLocation(location, 'full')).to.equal('530 Hampshire Street, Suite 301, San Francisco, CA 94110');
+      expect(f.formatLocation(location, 'full')).to.equal('530 Hampshire Street, Suite 301, San Francisco, CA 94110');
     })
   );
 });
