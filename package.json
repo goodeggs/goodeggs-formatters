@@ -32,10 +32,6 @@
     "mocha": "~1.x.x",
     "sinon": "^1.12.2"
   },
-  "engines": {
-    "node": "8.11.1",
-    "npm": "3.9.6"
-  },
   "babel": {
     "sourceMaps": "inline",
     "presets": [
