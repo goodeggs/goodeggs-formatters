@@ -115,7 +115,7 @@ const dateFormats = {
     }
     if (_isToday(date, tzid)) { return formatDate(date, 'shortTime', tzid); }
     if (_isTomorrow(date, tzid)) { return `${ formatDate(date, 'shortTime', tzid) } tomorrow`; }
-    return `${ formatDate(date, 'shortTime', tzid) } ${ formatDate(date, 'humanWeekday', tzid) }`;
+    return `${ formatDate(date, 'shortTime', tzid) } ${ formatDate(date, 'humanWeekday', tzid) } ${ formatDate(date, 'monthDay', tzid) }`;
   }
 };
 
