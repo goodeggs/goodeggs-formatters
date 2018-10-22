@@ -295,7 +295,7 @@ describe('goodeggs-formatters', function() {
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('5pm tomorrow');
         clock.now.restore();
         sinon.stub(clock, 'now').returns(clock.pacific('2012-03-06'));
-        expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('5pm Thursday');
+        expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('5pm Thursday 3/8');
         clock.now.restore();
       });
 
@@ -308,7 +308,7 @@ describe('goodeggs-formatters', function() {
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('noon tomorrow');
         clock.now.restore();
         sinon.stub(clock, 'now').returns(clock.pacific('2012-03-06'));
-        expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('noon Thursday');
+        expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('noon Thursday 3/8');
         clock.now.restore();
       });
 
@@ -321,7 +321,7 @@ describe('goodeggs-formatters', function() {
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('midnight tomorrow');
         clock.now.restore();
         sinon.stub(clock, 'now').returns(clock.pacific('2012-03-06'));
-        expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('midnight Thursday');
+        expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('midnight Thursday 3/8');
         clock.now.restore();
       });
     });
