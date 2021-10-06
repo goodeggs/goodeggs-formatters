@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib",
+    "target": "ES5",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "resolveJsonModule": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+     // Ensure that Babel can safely transpile files in the TypeScript project
+     "isolatedModules": false,
+  },
+  "include": ["src/*", "test/*", "types"]
+}
