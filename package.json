@@ -7,6 +7,10 @@
     "Michael Kebbekus <michael.kebbekus@goodeggs.com>",
     "Michelle Becker <michelle.becker@goodeggs.com>"
   ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "license": "Private",
   "main": "lib/index.js",
   "repository": {
