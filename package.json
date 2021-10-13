@@ -50,9 +50,5 @@
     "prepublish": "npm run compile",
     "test": "yarn tsc && jest",
     "tsc": "tsc"
-  },
-  "publishConfig": {
-    "registry": "https://npm.goodeggs.com/",
-    "always-auth": true
   }
 }
