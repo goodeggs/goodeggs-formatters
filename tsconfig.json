@@ -11,6 +11,7 @@
     "esModuleInterop": true,
      // Ensure that Babel can safely transpile files in the TypeScript project
      "isolatedModules": false,
+     "declaration": true
   },
   "include": ["src/*", "test/*", "types"]
 }
