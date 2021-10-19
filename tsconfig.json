@@ -1,17 +1,7 @@
 {
+  "extends": "@goodeggs/tsconfig/base",
   "compilerOptions": {
-    "outDir": "./lib",
-    "target": "ES5",
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "resolveJsonModule": true,
-    "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true,
-     // Ensure that Babel can safely transpile files in the TypeScript project
-     "isolatedModules": false,
-     "declaration": true
+    "outDir": "lib"
   },
   "include": ["src/*", "test/*", "types"]
 }

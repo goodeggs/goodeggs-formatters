@@ -32,6 +32,7 @@
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
     "@babel/preset-typescript": "^7.15.0",
+    "@goodeggs/tsconfig": "^1.0.0",
     "@types/accounting": "^0.4.2",
     "@types/jest": "^27.0.2",
     "@types/node": "^16.10.2",
