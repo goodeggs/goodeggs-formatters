@@ -3,13 +3,12 @@ declare module 'accouting' {
     settings: {
       currency: {
         format: {
-          pos: string,
-          neg: string,
-          zero: string
-        }
-      }
-    }
+          pos: string;
+          neg: string;
+          zero: string;
+        };
+      };
+    };
   }
   export default Accounting;
 }
-  

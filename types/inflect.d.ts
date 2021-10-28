@@ -1,3 +1,3 @@
 declare module 'inflect' {
-    export function ordinalize(arg: string): string;
+  export function ordinalize(arg: string): string;
 }
