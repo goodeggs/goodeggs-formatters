@@ -1,4 +1,11 @@
 declare module 'format-location' {
-  function formatLocation(location: any, type: string): string;
+  interface Location {
+    address?: string;
+    address2?: string | null;
+    city?: string;
+    zip?: string;
+    state?: string;
+  }
+  function formatLocation(location: Location, formatString: string): string;
   export default formatLocation;
 }
