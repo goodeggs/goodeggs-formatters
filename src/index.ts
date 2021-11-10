@@ -2,8 +2,9 @@ import accounting from 'accounting';
 import formatLocation from 'format-location';
 import getto from 'getto';
 import inflect from 'inflect';
-import clock from 'node-clock';
-import _ from 'underscore';
+import _ from 'lodash';
+import moment from 'moment';
+import {Moment} from 'moment-timezone';
 
 interface Card {
   type?: string;
@@ -40,21 +41,19 @@ interface DateFormats {
   longDayOfTheWeek: string;
   shortDayOfTheWeek: string;
   twoLetterDayOfTheWeek(date: Date, tzid: string): string;
-  iCalWeekday(date: string, tzid: string): string;
-  humanDate(date: number, tzid: string): string;
-  humanWeekday(date: number, tzid: string): string;
-  humanDay(date: number, tzid: string): string;
-  humanShortDay(date: number, tzid: string): string;
-  humanShoppingDay(date: number, tzid: string): string;
-  humanShortShoppingDay(date: number, tzid: string): string;
+  iCalWeekday(date: Date, tzid: string): string;
+  humanDate(date: Date, tzid: string): string;
+  humanWeekday(date: Date, tzid: string): string;
+  humanDay(date: Date, tzid: string): string;
+  humanShortDay(date: Date, tzid: string): string;
+  humanShoppingDay(date: Date, tzid: string): string;
+  humanShortShoppingDay(date: Date, tzid: string): string;
   humanTime: string;
   year: string;
-  orderCutoffDateTime(date: number, tzid: string): string;
+  orderCutoffDateTime(date: Date, tzid: string): string;
 }
 
 type FormatString = keyof typeof dateFormats;
-
-clock.extendNumber();
 
 // Customize negative currency formatting: -$5.00
 accounting.settings.currency.format = {
@@ -106,11 +105,11 @@ const formatCreditCard = function (card: Card): string {
 const _isFunction = (fn: unknown) => typeof fn === 'function';
 
 const _formatDate = (date: Date, format: string, tzid: string): string => {
-  return clock.tz(date.valueOf(), format, tzid);
+  return moment.tz(date.toString(), format, tzid).toString();
 };
 
 const formatDate = function (
-  date: string | number,
+  date: Date | Moment,
   formatString: FormatString,
   tzid: string,
 ): string {
@@ -120,29 +119,29 @@ const formatDate = function (
   if (date == null) {
     return '';
   }
-  date = new Date(date).getTime();
+  date = new Date(date.toString());
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const format = dateFormats[formatString] != null ? dateFormats[formatString] : formatString;
 
   return (
     // eslint-disable-next-line @typescript-eslint/ban-types
-    (_isFunction(format) && (format as Function)(date, tzid)) ||
+    (_isFunction(format) && (format as Function)(date.getTime(), tzid)) ||
     _formatDate(new Date(date), format as string, tzid)
   );
 };
 
-const sameDay = (date1: string | number, date2: string | number, tzid: string) => {
+const sameDay = (date1: Date | Moment, date2: Date | Moment, tzid: string) => {
   return formatDate(date1, 'clockDate', tzid) === formatDate(date2, 'clockDate', tzid);
 };
 
-const _isToday = (date: string | number, tzid: string) => sameDay(date, clock.now(), tzid);
+const _isToday = (date: Date | Moment, tzid: string) => sameDay(date, new Date(Date.now()), tzid);
 
-const _isTomorrow = function (date: string | number, tzid: string) {
+const _isTomorrow = function (date: Date | Moment, tzid: string) {
   // Can't use date math on client :(
   // Add one day
   const tomorrow = new Date(Date.now());
   tomorrow.setDate(tomorrow.getDate() + 1);
-  return sameDay(date, tomorrow.getTime(), tzid);
+  return sameDay(date, tomorrow, tzid);
 };
 
 const dateFormats: DateFormats = {
@@ -242,7 +241,7 @@ const dateFormats: DateFormats = {
     if (isMidnight) {
       const yesterday = new Date(date);
       yesterday.setDate(yesterday.getDate() - 1);
-      date = yesterday.getTime();
+      date = yesterday;
     }
     if (_isToday(date, tzid)) {
       return formatDate(date, 'shortTime', tzid);
@@ -269,17 +268,17 @@ interface Options {
 }
 
 const _formatDay = function (date: Date, tzid: string) {
-  if (_isToday(date.getTime(), tzid)) {
+  if (_isToday(date, tzid)) {
     return 'today';
-  } else if (_isTomorrow(date.getTime(), tzid)) {
+  } else if (_isTomorrow(date, tzid)) {
     return 'tomorrow';
   }
-  return `on ${formatDate(date.getTime(), 'shortDay', tzid)}`;
+  return `on ${formatDate(date, 'shortDay', tzid)}`;
 };
 
 const formatTimeRange = function (
-  startAt: string | Time,
-  endAt: string | Time,
+  startAt: Date | Moment,
+  endAt: Date | Moment,
   tzid: string | Time,
   options: string | Time | Options,
 ): string {
@@ -288,10 +287,9 @@ const formatTimeRange = function (
   }
 
   // Accept an object with startAt and endAt keys
-  if ((startAt as Time).startAt != null && (startAt as Time).endAt != null) {
+  if (startAt != null && endAt != null) {
     options = tzid;
-    tzid = endAt;
-    ({startAt, endAt} = startAt as Time);
+    tzid = endAt.toString();
   }
 
   const format =
@@ -300,12 +298,8 @@ const formatTimeRange = function (
   const separator =
     (options != null && typeof options === 'object' && (options as Options).separator) || ' - ';
 
-  const startStr = formatDate(
-    startAt as string,
-    format as keyof typeof dateFormats,
-    tzid as string,
-  );
-  const endStr = formatDate(endAt as string, format as keyof typeof dateFormats, tzid as string);
+  const startStr = formatDate(startAt as Date, format as keyof typeof dateFormats, tzid as string);
+  const endStr = formatDate(endAt as Date, format as keyof typeof dateFormats, tzid as string);
   if (startStr === endStr) {
     return startStr;
   }
@@ -313,8 +307,8 @@ const formatTimeRange = function (
 };
 
 const formatDateRange = function (
-  startAt: string | Time,
-  endAt: string | Time,
+  startAt: Date | Moment,
+  endAt: Date | Moment,
   tzid?: string | Time | Options,
   options?: string | Time | Options,
 ): string | null {
@@ -323,10 +317,9 @@ const formatDateRange = function (
   }
 
   // Accept an object with startAt and endAt keys
-  if ((startAt as Time).startAt != null && (startAt as Time).endAt != null) {
+  if (startAt != null && endAt != null) {
     options = tzid;
-    tzid = endAt;
-    ({startAt, endAt} = startAt as Time);
+    tzid = endAt.toString();
   }
 
   const format =
@@ -336,22 +329,22 @@ const formatDateRange = function (
     (options != null && typeof options === 'object' && (options as Options).separator) || ' - ';
 
   if (format === 'prose') {
-    if (sameDay(startAt as string, endAt as string, tzid as string)) {
-      return `between ${formatTimeRange(startAt as string, endAt as string, tzid as string, {
+    if (sameDay(startAt, endAt, tzid as string)) {
+      return `between ${formatTimeRange(startAt, endAt, tzid as string, {
         separator: ' and ',
-      })} ${_formatDay(new Date(startAt as string), tzid as string)}`;
+      })} ${_formatDay(new Date(startAt.toString()), tzid as string)}`;
     }
-    return `between ${formatDate(startAt as string, 'shortTime', tzid as string)} ${_formatDay(
-      new Date(startAt as string),
+    return `between ${formatDate(startAt, 'shortTime', tzid as string)} ${_formatDay(
+      new Date(startAt.toString()),
       tzid as string,
-    )} and ${formatDate(endAt as string, 'shortTime', tzid as string)} ${_formatDay(
-      new Date(endAt as string),
+    )} and ${formatDate(endAt, 'shortTime', tzid as string)} ${_formatDay(
+      new Date(endAt.toString()),
       tzid as string,
     )}`;
   }
 
-  if (sameDay(startAt as string, endAt as string, tzid as string)) {
-    return `${formatDate(startAt as string, 'shortDay', tzid as string)}, ${formatTimeRange(
+  if (sameDay(startAt, endAt, tzid as string)) {
+    return `${formatDate(startAt, 'shortDay', tzid as string)}, ${formatTimeRange(
       startAt,
       endAt,
       tzid as string,
@@ -365,8 +358,8 @@ const formatDateRange = function (
     separator = '...until ';
   }
 
-  return `${formatDate(startAt as string, 'shortDayTime', tzid as string)}${separator}${formatDate(
-    endAt as string,
+  return `${formatDate(startAt, 'shortDayTime', tzid as string)}${separator}${formatDate(
+    endAt,
     'shortDayTime',
     tzid as string,
   )}`;
@@ -393,7 +386,7 @@ const formatCustomerName = ({
 }: {
   firstName?: string | null;
   lastName?: string | null;
-}): string => _([firstName, lastName]).chain().compact().invoke('trim').value().join(' ');
+}): string => _([firstName, lastName]).chain().compact().invoke('trim').toString();
 
 const formatProductName = function (
   productOrLineItem: {
@@ -450,8 +443,8 @@ const dayFormats = {
 };
 
 // formats day strings in the format of: 2014-08-15
-const formatDay = function (day: string, formatString: string): string {
-  const formats = _.extend({}, dateFormats, dayFormats);
+const formatDay = function (day: string, formatString: FormatString): string {
+  const formats = _.assignIn({}, dateFormats, dayFormats);
   if (formats[formatString] === undefined || day.length === 0) {
     return day;
   }
@@ -461,8 +454,11 @@ const formatDay = function (day: string, formatString: string): string {
   }
   const date = new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]));
   const format = formats[formatString];
-  const {tzid} = clock.utc;
-  return (_isFunction(format) && format(date, tzid)) || _formatDate(date, format, tzid);
+  const tzid = moment.utc().toString();
+  return (
+    (typeof format === 'function' && format(date, tzid)) ||
+    _formatDate(date, format.toString(), tzid)
+  );
 };
 
 const normalizePhone = function (phone?: string | null): string | null | undefined {
@@ -477,7 +473,7 @@ const normalizePhone = function (phone?: string | null): string | null | undefin
   return `${prefix}${digits}`;
 };
 
-const formatPhone = function (str?: string | null): string | null | undefined {
+const formatPhone = function (str?: string | null | undefined): string | null | undefined {
   if (str == null) {
     return str;
   }
@@ -502,7 +498,7 @@ const normalizeZip = function (str: string | null): string | null {
 const unformat = (num: string): number => accounting.unformat(num);
 
 const formatDeliveryWindow = (
-  pickupWindow: {startAt: string | number; endAt: string | number},
+  pickupWindow: {startAt: Date | Moment; endAt: Date | Moment},
   tzid: string,
 ): string =>
   `${formatDate(pickupWindow.startAt, 'clockTime', tzid)}-${formatDate(
