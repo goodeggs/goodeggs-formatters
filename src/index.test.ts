@@ -315,24 +315,24 @@ describe('goodeggs-formatters', function () {
 
     describe('shortTime', function () {
       it('formats time', function () {
-        date = clock.pacific('2012-03-08 17:00');
+        date = new Date('2012-03-08 17:00');
         expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).toEqual('5pm');
       });
 
       it('special cases 12:00pm', function () {
-        date = clock.pacific('2012-03-08 12:00');
+        date = new Date('2012-03-08 12:00');
         expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).toEqual('noon');
       });
 
       it('special cases 12:00am', function () {
-        date = clock.pacific('2012-03-08 24:00');
+        date = new Date('2012-03-08 24:00');
         expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).toEqual('midnight');
       });
     });
 
     describe('orderCutoffDateTime', function () {
       it('formats time', function () {
-        date = clock.pacific('2012-03-08 17:00');
+        date = new Date('2012-03-08 17:00');
         sandbox.stub(Date, 'now').returns(clock.pacific('2012-03-08'));
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).toEqual('5pm');
         sandbox.restore();
@@ -349,7 +349,7 @@ describe('goodeggs-formatters', function () {
       });
 
       it('special cases 12:00pm', function () {
-        date = clock.pacific('2012-03-08 12:00');
+        date = new Date('2012-03-08 12:00');
         sandbox.stub(Date, 'now').returns(clock.pacific('2012-03-08'));
         expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).toEqual('noon');
         sandbox.restore();
@@ -366,7 +366,7 @@ describe('goodeggs-formatters', function () {
       });
 
       it('special cases 12:00am', function () {
-        date = clock.pacific('2012-03-08 24:00');
+        date = new Date('2012-03-08 24:00');
         sandbox.stub(Date, 'now').returns(clock.pacific('2012-03-08'));
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).toEqual('midnight');
         sandbox.restore();
