@@ -192,16 +192,16 @@ describe('goodeggs-formatters', function () {
 
   describe('.formatDateRange', function () {
     it('formats a date range of different dates', function () {
-      const startAt = clock.pacific('2012-03-11 09:00');
-      const endAt = clock.pacific('2012-03-13 09:00');
+      const startAt = new Date('2012-03-11 09:00');
+      const endAt = new Date('2012-03-13 09:00');
       expect(f.formatDateRange(startAt, endAt, clock.pacific.tzid)).toEqual(
         'Sunday, Mar 11, 9am - Tuesday, Mar 13, 9am',
       );
     });
 
     it('formats a date range of the same day', function () {
-      const startAt = clock.pacific('2012-03-11 09:00');
-      const endAt = clock.pacific('2012-03-11 19:20');
+      const startAt = new Date('2012-03-11 09:00');
+      const endAt = new Date('2012-03-11 19:20');
       expect(f.formatDateRange(startAt, endAt, clock.pacific.tzid)).toEqual(
         'Sunday, Mar 11, 9am - 7:20pm',
       );
