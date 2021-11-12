@@ -1,7 +1,6 @@
 import accounting from 'accounting';
 import formatLocation from 'format-location';
 import getto from 'getto';
-import inflect from 'inflect';
 import _ from 'lodash';
 import moment from 'moment';
 import {Moment} from 'moment-timezone';
@@ -105,7 +104,7 @@ const formatCreditCard = function (card: Card): string {
 const _isFunction = (fn: unknown) => typeof fn === 'function';
 
 const _formatDate = (date: Date, format: string, tzid: string): string => {
-  return moment.tz(date.toString(), format, tzid).toString();
+  return moment(date).format(format);
 };
 
 const formatDate = function (
@@ -119,7 +118,8 @@ const formatDate = function (
   if (date == null) {
     return '';
   }
-  date = new Date(date.toString());
+  date = new Date(moment(date).toString());
+
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const format = dateFormats[formatString] != null ? dateFormats[formatString] : formatString;
 
@@ -145,30 +145,30 @@ const _isTomorrow = function (date: Date | Moment, tzid: string) {
 };
 
 const dateFormats: DateFormats = {
-  monthDay: '%-m/%-d', // 3/22
+  monthDay: 'M/D', // 3/22
   longMonthDay: '%B %-d', // March 22
-  shortMonthDay: '%b %-d', // Mar 22
-  shortDate: '%-m/%-d/%Y', // 3/22/2008
-  mailChimpDate: '%m/%d/%Y', // 03/22/2008
-  shortDay: '%A, %b %-d', // Saturday, Mar 22
+  shortMonthDay: 'MMM D', // Mar 22
+  shortDate: 'M/DD/YYYY', // 3/22/2008
+  mailChimpDate: 'MM/DD/YYYY', // 03/22/2008
+  shortDay: 'dddd, MMM DD', // Saturday, Mar 22
   shorterDay: '%a %b %-d', // Sat Mar 22
   longDay: '%A, %B %-d, %Y', // Saturday, March 22, 2008
   day: '%B %-d, %Y', // March 22, 2008
-  shoppingDay: '%A %-m/%-d', // Monday 10/14
-  shortShoppingDay: '%a %-m/%-d', // Mon 10/14
+  shoppingDay: 'dddd M/D', // Monday 10/14
+  shortShoppingDay: 'ddd M/D', // Mon 10/14
   limitDay: '%m-%d-%Y (%a)', // 06-01-2014 (Sun)
   shortTime(date, tzid) {
     // 5pm
-    const str = _formatDate(date, '%-l:%M%P', tzid);
+    const str = _formatDate(date, 'h:mma', tzid);
     return str.replace('12:00pm', 'noon').replace('12:00am', 'midnight').replace(':00', '');
   },
   shortDayTime(date, tzid) {
     // Saturday, Mar 22, 5:00pm
-    const str = _formatDate(date, '%A, %b %-d, %-l:%M%P', tzid);
+    const str = _formatDate(date, 'dddd, MMM DD, Ha', tzid);
     return str.replace('12:00pm', 'noon').replace(':00', '');
   },
   clockDateTime: '%Y-%m-%d %H:%M', // 2008-03-22 17:00
-  clockDate: '%Y-%m-%d', // 2008-03-22
+  clockDate: 'YYYY/MM/DD', // 2008-03-22
   clockTime: '%H:%M', // 17:00
   hour: '%-l', // 5
   iCalDay: '%Y%m%d', // 20080327
@@ -179,7 +179,7 @@ const dateFormats: DateFormats = {
   shortDayOfTheWeek: '%a', // Tue
   twoLetterDayOfTheWeek(date, tzid) {
     // mo, tu, we
-    return _formatDate(date, '%a', tzid).slice(0, 2).toLowerCase();
+    return _formatDate(date, 'dd', tzid).slice(0, 2).toLowerCase();
   },
   iCalWeekday(date, tzid) {
     // MO, TU, WE
@@ -187,8 +187,8 @@ const dateFormats: DateFormats = {
   },
   humanDate(date, tzid) {
     // March 22nd
-    let str = _formatDate(new Date(date), '%B ', tzid);
-    str += inflect.ordinalize(_formatDate(new Date(date), '%-d', tzid));
+    const str = _formatDate(new Date(date), 'MMMM Do', tzid);
+    // str += inflect.ordinalize(_formatDate(new Date(date), 'O', tzid));
     return str;
   },
   humanWeekday(date, tzid) {
@@ -199,18 +199,18 @@ const dateFormats: DateFormats = {
     if (_isTomorrow(date, tzid)) {
       return 'tomorrow';
     }
-    return _formatDate(new Date(date), '%A', tzid);
+    return _formatDate(new Date(date), 'dddd', tzid);
   },
   humanDay(date, tzid) {
     // Monday, March 22nd
-    let str = _formatDate(new Date(date), '%A, %B ', tzid);
-    str += inflect.ordinalize(_formatDate(new Date(date), '%-d', tzid));
+    const str = _formatDate(new Date(date), '%A, %B ', tzid);
+    // str += inflect.ordinalize(_formatDate(new Date(date), '%-d', tzid));
     return str;
   },
   humanShortDay(date, tzid) {
     // Monday, Mar 22nd
-    let str = _formatDate(new Date(date), '%A, %b ', tzid);
-    str += inflect.ordinalize(_formatDate(new Date(date), '%-d', tzid));
+    const str = _formatDate(new Date(date), 'dddd, MMM Do', tzid);
+    // str += inflect.ordinalize(_formatDate(new Date(date), '%-d', tzid));
     return str;
   },
   humanShoppingDay(date, tzid) {
@@ -299,7 +299,7 @@ const formatTimeRange = function (
     (options != null && typeof options === 'object' && (options as Options).separator) || ' - ';
 
   const startStr = formatDate(startAt as Date, format as keyof typeof dateFormats, tzid as string);
-  const endStr = formatDate(endAt as Date, format as keyof typeof dateFormats, tzid as string);
+  const endStr = formatDate(moment(endAt), format as keyof typeof dateFormats, tzid as string);
   if (startStr === endStr) {
     return startStr;
   }
@@ -307,7 +307,7 @@ const formatTimeRange = function (
 };
 
 const formatDateRange = function (
-  startAt: Date | Moment,
+  startAt: Date | {startAt: Date; endAt: Date},
   endAt: Date | Moment,
   tzid?: string | Time | Options,
   options?: string | Time | Options,
@@ -317,9 +317,11 @@ const formatDateRange = function (
   }
 
   // Accept an object with startAt and endAt keys
-  if (startAt != null && endAt != null) {
+  if (startAt.startAt) {
     options = tzid;
     tzid = endAt.toString();
+    endAt = startAt.endAt;
+    startAt = startAt.startAt;
   }
 
   const format =
@@ -329,12 +331,12 @@ const formatDateRange = function (
     (options != null && typeof options === 'object' && (options as Options).separator) || ' - ';
 
   if (format === 'prose') {
-    if (sameDay(startAt, endAt, tzid as string)) {
-      return `between ${formatTimeRange(startAt, endAt, tzid as string, {
+    if (sameDay(startAt as Date, endAt, tzid as string)) {
+      return `between ${formatTimeRange(startAt as Date, endAt, tzid as string, {
         separator: ' and ',
       })} ${_formatDay(new Date(startAt.toString()), tzid as string)}`;
     }
-    return `between ${formatDate(startAt, 'shortTime', tzid as string)} ${_formatDay(
+    return `between ${formatDate(startAt as Date, 'shortTime', tzid as string)} ${_formatDay(
       new Date(startAt.toString()),
       tzid as string,
     )} and ${formatDate(endAt, 'shortTime', tzid as string)} ${_formatDay(
@@ -343,9 +345,9 @@ const formatDateRange = function (
     )}`;
   }
 
-  if (sameDay(startAt, endAt, tzid as string)) {
-    return `${formatDate(startAt, 'shortDay', tzid as string)}, ${formatTimeRange(
-      startAt,
+  if (sameDay(startAt as Date, endAt, tzid as string)) {
+    return `${formatDate(startAt as Date, 'shortDay', tzid as string)}, ${formatTimeRange(
+      startAt as Date,
       endAt,
       tzid as string,
       {
@@ -358,7 +360,7 @@ const formatDateRange = function (
     separator = '...until ';
   }
 
-  return `${formatDate(startAt, 'shortDayTime', tzid as string)}${separator}${formatDate(
+  return `${formatDate(startAt as Date, 'shortDayTime', tzid as string)}${separator}${formatDate(
     endAt,
     'shortDayTime',
     tzid as string,
@@ -386,7 +388,24 @@ const formatCustomerName = ({
 }: {
   firstName?: string | null;
   lastName?: string | null;
-}): string => _([firstName, lastName]).chain().compact().invoke('trim').toString();
+}): string => {
+  const fName = firstName?.trim();
+  const lName = lastName?.trim();
+  let fullName = '';
+  // eslint-disable-next-line lodash/prefer-lodash-chain
+  _([fName, lName])
+    .chain()
+    .compact()
+    .value()
+    // eslint-disable-next-line array-callback-return
+    .map((n) => {
+      if (fullName !== '') {
+        fullName += ' ';
+      }
+      fullName += n;
+    });
+  return fullName;
+};
 
 const formatProductName = function (
   productOrLineItem: {
@@ -443,7 +462,7 @@ const dayFormats = {
 };
 
 // formats day strings in the format of: 2014-08-15
-const formatDay = function (day: string, formatString: FormatString): string {
+const formatDay = function (day: string, formatString: string): string {
   const formats = _.assignIn({}, dateFormats, dayFormats);
   if (formats[formatString] === undefined || day.length === 0) {
     return day;
@@ -455,10 +474,7 @@ const formatDay = function (day: string, formatString: FormatString): string {
   const date = new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]));
   const format = formats[formatString];
   const tzid = moment.utc().toString();
-  return (
-    (typeof format === 'function' && format(date, tzid)) ||
-    _formatDate(date, format.toString(), tzid)
-  );
+  return (_isFunction(format) && format(date, tzid)) || _formatDate(date, format.toString(), tzid);
 };
 
 const normalizePhone = function (phone?: string | null): string | null | undefined {
