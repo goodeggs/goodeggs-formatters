@@ -223,7 +223,7 @@ describe('goodeggs-formatters', function () {
 
   describe('.formatDate', function () {
     let date: Date;
-    beforeEach(() => (date = clock.pacific('2012-03-08 17:00')));
+    beforeEach(() => (date = new Date('2012-03-08 17:00')));
 
     describe('humanDate', () => {
       it('returns a full month name with ordinalized date', () => {
