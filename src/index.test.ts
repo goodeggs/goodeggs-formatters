@@ -1,3 +1,4 @@
+import moment from 'moment';
 import clock from 'node-clock';
 import sinon from 'sinon';
 
@@ -73,7 +74,9 @@ describe('goodeggs-formatters', function () {
   });
 
   it('formatDate', () =>
-    expect(f.formatDate('2014-3-8', 'mailChimpDate', clock.utc.tzid)).toEqual('03/08/2014'));
+    expect(f.formatDate(new Date('2014-3-8'), 'mailChimpDate', clock.utc.tzid)).toEqual(
+      '03/08/2014',
+    ));
 
   describe('normalize phone', function () {
     it('defaults to US numbers', function () {
@@ -206,8 +209,8 @@ describe('goodeggs-formatters', function () {
 
     it('formats a date range object', function () {
       const range = {
-        startAt: clock.pacific('2012-03-11 09:00'),
-        endAt: clock.pacific('2012-03-13 09:00'),
+        startAt: new Date(moment('2012-03-11 09:00').toString()),
+        endAt: new Date(moment('2012-03-13 09:00').toString()),
       };
       expect(f.formatDateRange(range, clock.pacific.tzid)).toEqual(
         'Sunday, Mar 11, 9am - Tuesday, Mar 13, 9am',
@@ -219,7 +222,7 @@ describe('goodeggs-formatters', function () {
   });
 
   describe('.formatDate', function () {
-    let date: number;
+    let date: Date;
     beforeEach(() => (date = clock.pacific('2012-03-08 17:00')));
 
     describe('humanDate', () => {
@@ -305,7 +308,7 @@ describe('goodeggs-formatters', function () {
           '2013-09-06': 'FR',
           '2013-09-07': 'SA',
         })) {
-          expect(f.formatDate(clock.tz(day, tzid), format, tzid)).toEqual(weekday);
+          expect(f.formatDate(moment(day), format, tzid)).toEqual(weekday);
         }
       });
     });
