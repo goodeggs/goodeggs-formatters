@@ -2,7 +2,7 @@ import {expect} from 'chai';
 import clock from 'node-clock';
 import sinon from 'sinon';
 
-import f from '../lib';
+import * as f from '.';
 
 describe('goodeggs-formatters', function () {
   it('formatPhone', function () {
@@ -19,7 +19,9 @@ describe('goodeggs-formatters', function () {
         f.formatCreditCard({
           type: 'visa',
           last4: '4242',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           exp_month: '6',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           exp_year: '2020',
         }),
       ).to.eql('VISA 4242 exp 06/20'));
@@ -28,7 +30,9 @@ describe('goodeggs-formatters', function () {
       expect(
         f.formatCreditCard({
           last4: '4242',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           exp_month: '6',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           exp_year: '2020',
         }),
       ).to.eql('4242 exp 06/20'));
@@ -119,7 +123,14 @@ describe('goodeggs-formatters', function () {
   });
 
   describe('formatProductName', function () {
-    let {product} = {};
+    let product: {
+      ofThe?: {
+        enabled?: boolean;
+        name?: string;
+      };
+      name?: string;
+      ofTheIsAvailableFor?: (arg?: {pickupDate?: number}) => boolean;
+    };
     beforeEach(
       () =>
         (product = {
@@ -161,36 +172,37 @@ describe('goodeggs-formatters', function () {
         () =>
           (product.ofThe = {
             enabled: true,
-            ofTheIsAvailableFor() {
-              return true;
-            },
           }),
       );
 
-      it('falls back to product name', () =>
-        expect(f.formatProductName(product)).to.eql('Muffin of the Week'));
+      it('falls back to product name', function () {
+        product.ofTheIsAvailableFor = () => true;
+        expect(f.formatProductName(product)).to.eql('Muffin of the Week');
+      });
     });
   });
 
   describe('.formatDateRange', function () {
     it('formats a date range of different dates', function () {
-      const startAt = clock.pacific('2012-03-11 09:00');
-      const endAt = clock.pacific('2012-03-13 09:00');
-      expect(f.formatDateRange(startAt, endAt, clock.pacific.tzid)).to.eql(
+      const range: f.Interval = {
+        startAt: clock.pacific('2012-03-11 09:00'),
+        endAt: clock.pacific('2012-03-13 09:00'),
+      };
+      expect(f.formatDateRange(range, clock.pacific.tzid)).to.eql(
         'Sunday, Mar 11, 9am - Tuesday, Mar 13, 9am',
       );
     });
 
     it('formats a date range of the same day', function () {
-      const startAt = clock.pacific('2012-03-11 09:00');
-      const endAt = clock.pacific('2012-03-11 19:20');
-      expect(f.formatDateRange(startAt, endAt, clock.pacific.tzid)).to.eql(
-        'Sunday, Mar 11, 9am - 7:20pm',
-      );
+      const range: f.Interval = {
+        startAt: clock.pacific('2012-03-11 09:00'),
+        endAt: clock.pacific('2012-03-11 19:20'),
+      };
+      expect(f.formatDateRange(range, clock.pacific.tzid)).to.eql('Sunday, Mar 11, 9am - 7:20pm');
     });
 
     it('formats a date range object', function () {
-      const range = {
+      const range: f.Interval = {
         startAt: clock.pacific('2012-03-11 09:00'),
         endAt: clock.pacific('2012-03-13 09:00'),
       };
@@ -204,7 +216,7 @@ describe('goodeggs-formatters', function () {
   });
 
   describe('.formatDate', function () {
-    let date = null;
+    let date: Date;
     beforeEach(() => (date = clock.pacific('2012-03-08 17:00')));
 
     describe('humanDate', () =>
@@ -212,16 +224,16 @@ describe('goodeggs-formatters', function () {
         expect(f.formatDate(date, 'humanDate', clock.pacific.tzid)).to.equal('March 8th')));
 
     describe('humanWeekday', function () {
-      afterEach(() => (typeof Date.now.restore === 'function' ? Date.now.restore() : undefined));
-
       it('formats today', function () {
-        sinon.stub(Date, 'now').returns(clock.pacific('2012-03-08 12:00'));
+        const dateNowStub = sinon.stub(Date, 'now').returns(clock.pacific('2012-03-08 12:00'));
         expect(f.formatDate(date, 'humanWeekday', clock.pacific.tzid)).to.eql('today');
+        dateNowStub.restore();
       });
 
       it('formats tomorrow', function () {
-        sinon.stub(Date, 'now').returns(clock.pacific('2012-03-07 12:00'));
+        const dateNowStub = sinon.stub(Date, 'now').returns(clock.pacific('2012-03-07 12:00'));
         expect(f.formatDate(date, 'humanWeekday', clock.pacific.tzid)).to.eql('tomorrow');
+        dateNowStub.restore();
       });
 
       it('formats arbitrary weekdays', () =>
@@ -235,16 +247,16 @@ describe('goodeggs-formatters', function () {
         )));
 
     describe('humanShoppingDay', function () {
-      afterEach(() => (typeof Date.now.restore === 'function' ? Date.now.restore() : undefined));
-
       it('formats today', function () {
-        sinon.stub(Date, 'now').returns(clock.pacific('2012-03-08 12:00'));
+        const dateNowStub = sinon.stub(Date, 'now').returns(clock.pacific('2012-03-08 12:00'));
         expect(f.formatDate(date, 'humanShoppingDay', clock.pacific.tzid)).to.eql('today 3/8');
+        dateNowStub.restore();
       });
 
       it('formats tomorrow', function () {
-        sinon.stub(Date, 'now').returns(clock.pacific('2012-03-07 12:00'));
+        const dateNowStub = sinon.stub(Date, 'now').returns(clock.pacific('2012-03-07 12:00'));
         expect(f.formatDate(date, 'humanShoppingDay', clock.pacific.tzid)).to.eql('tomorrow 3/8');
+        dateNowStub.restore();
       });
 
       it('formats arbitrary weekdays', () =>
@@ -252,18 +264,18 @@ describe('goodeggs-formatters', function () {
     });
 
     describe('humanShortShoppingDay', function () {
-      afterEach(() => (typeof Date.now.restore === 'function' ? Date.now.restore() : undefined));
-
       it('formats today', function () {
-        sinon.stub(Date, 'now').returns(clock.pacific('2012-03-08 12:00'));
+        const dateNowStub = sinon.stub(Date, 'now').returns(clock.pacific('2012-03-08 12:00'));
         expect(f.formatDate(date, 'humanShortShoppingDay', clock.pacific.tzid)).to.eql('today 3/8');
+        dateNowStub.restore();
       });
 
       it('formats tomorrow', function () {
-        sinon.stub(Date, 'now').returns(clock.pacific('2012-03-07 12:00'));
+        const dateNowStub = sinon.stub(Date, 'now').returns(clock.pacific('2012-03-07 12:00'));
         expect(f.formatDate(date, 'humanShortShoppingDay', clock.pacific.tzid)).to.eql(
           'tomorrow 3/8',
         );
+        dateNowStub.restore();
       });
 
       it('formats another day', () =>
@@ -312,60 +324,57 @@ describe('goodeggs-formatters', function () {
     describe('orderCutoffDateTime', function () {
       it('formats time', function () {
         date = clock.pacific('2012-03-08 17:00');
-        sinon.stub(clock, 'now').returns(clock.pacific('2012-03-08'));
+        const dateNowStub = sinon.stub(Date, 'now').returns(clock.pacific('2012-03-08'));
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('5pm');
-        clock.now.restore();
-        sinon.stub(clock, 'now').returns(clock.pacific('2012-03-07'));
+        dateNowStub.returns(clock.pacific('2012-03-07'));
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql(
           '5pm tomorrow',
         );
-        clock.now.restore();
-        sinon.stub(clock, 'now').returns(clock.pacific('2012-03-06'));
+        dateNowStub.returns(clock.pacific('2012-03-06'));
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql(
           '5pm Thursday 3/8',
         );
-        clock.now.restore();
+        dateNowStub.restore();
       });
 
       it('special cases 12:00pm', function () {
         date = clock.pacific('2012-03-08 12:00');
-        sinon.stub(clock, 'now').returns(clock.pacific('2012-03-08'));
+        const dateNowStub = sinon.stub(Date, 'now').returns(clock.pacific('2012-03-08'));
         expect(f.formatDate(date, 'shortTime', clock.pacific.tzid)).to.eql('noon');
-        clock.now.restore();
-        sinon.stub(clock, 'now').returns(clock.pacific('2012-03-07'));
+        dateNowStub.returns(clock.pacific('2012-03-07'));
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql(
           'noon tomorrow',
         );
-        clock.now.restore();
-        sinon.stub(clock, 'now').returns(clock.pacific('2012-03-06'));
+        dateNowStub.returns(clock.pacific('2012-03-06'));
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql(
           'noon Thursday 3/8',
         );
-        clock.now.restore();
+        dateNowStub.restore();
       });
 
       it('special cases 12:00am', function () {
         date = clock.pacific('2012-03-08 24:00');
-        sinon.stub(clock, 'now').returns(clock.pacific('2012-03-08'));
+        const dateNowStub = sinon.stub(Date, 'now').returns(clock.pacific('2012-03-08'));
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql('midnight');
-        clock.now.restore();
-        sinon.stub(clock, 'now').returns(clock.pacific('2012-03-07'));
+        dateNowStub.returns(clock.pacific('2012-03-07'));
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql(
           'midnight tomorrow',
         );
-        clock.now.restore();
-        sinon.stub(clock, 'now').returns(clock.pacific('2012-03-06'));
+        dateNowStub.returns(clock.pacific('2012-03-06'));
         expect(f.formatDate(date, 'orderCutoffDateTime', clock.pacific.tzid)).to.eql(
           'midnight Thursday 3/8',
         );
-        clock.now.restore();
+        dateNowStub.restore();
       });
     });
   });
 
   describe('formatPromoCodeValue', function () {
     describe('a dollar promoCode', function () {
-      let promoCode = null;
+      let promoCode: {
+        type: string;
+        value: number;
+      };
       beforeEach(
         () =>
           (promoCode = {
@@ -378,7 +387,10 @@ describe('goodeggs-formatters', function () {
     });
 
     describe('a percent promoCode', function () {
-      let promoCode = null;
+      let promoCode: {
+        type: string;
+        value: number;
+      };
       beforeEach(
         () =>
           (promoCode = {
@@ -387,7 +399,7 @@ describe('goodeggs-formatters', function () {
           }),
       );
 
-      it('formats as a precentage', () => expect(f.formatPromoCodeValue(promoCode)).to.eql('5%'));
+      it('formats as a percentage', () => expect(f.formatPromoCodeValue(promoCode)).to.eql('5%'));
     });
   });
 

@@ -1,14 +1,15 @@
+// TODO(@camillateodoro) Remove when migrate to Moment.
 declare module 'node-clock' {
-  interface UTC {
+  interface TZFunc {
+    (value: string): number & Date;
     tzid: string;
   }
-
   const clock: {
-    utc: UTC;
+    utc: TZFunc;
     extendNumber(): void;
     tz(date: number | string, format?: string, tz?: string): string;
     now(): number;
-    pacific: unknown;
+    pacific: TZFunc;
   };
 
   export default clock;

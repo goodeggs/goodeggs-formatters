@@ -1,3 +1,4 @@
+// TODO(@camillateodoro) Remove when port format-location to TypeScript.
 declare module 'format-location' {
   interface Location {
     address?: string;
