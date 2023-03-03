@@ -2158,10 +2158,6 @@ formatio@1.1.1:
   dependencies:
     samsam "~1.1"
 
-fraction.js@^1.3.0:
-  version "1.9.0"
-  resolved "https://npm.goodeggs.com/fraction.js/-/fraction.js-1.9.0.tgz#34463f6f7bc1ddcec3e05e2d4977d24612932170"
-
 fs-readdir-recursive@^1.1.0:
   version "1.1.0"
   resolved "https://npm.goodeggs.com/fs-readdir-recursive/-/fs-readdir-recursive-1.1.0.tgz#e32fc030a2ccee44a6b5371308da54be0b397d27"
