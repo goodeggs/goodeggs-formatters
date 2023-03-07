@@ -1,7 +1,6 @@
 import accounting from 'accounting';
 import formatLocation from 'format-location';
 import getto from 'getto';
-import inflect from 'inflect';
 import clock from 'node-clock';
 import _ from 'underscore';
 
@@ -140,6 +139,20 @@ const _isTomorrow = function (date: Date, tzid: string): boolean {
   tomorrow.setDate(tomorrow.getDate() + 1);
   return sameDay(date, tomorrow, tzid);
 };
+const ordinalize = function (i: string): string {
+  const j = parseInt(i) % 10,
+    k = parseInt(i) % 100;
+  if (j === 1 && k !== 11) {
+    return `${i}st`;
+  }
+  if (j === 2 && k !== 12) {
+    return `${i}nd`;
+  }
+  if (j === 3 && k !== 13) {
+    return `${i}rd`;
+  }
+  return `${i}th`;
+};
 
 const dateFormats: DateFormats = {
   monthDay: '%-m/%-d', // 3/22
@@ -185,7 +198,7 @@ const dateFormats: DateFormats = {
   humanDate(date, tzid): string {
     // March 22nd
     let str = _formatDate(date, '%B ', tzid);
-    str += inflect.ordinalize(_formatDate(date, '%-d', tzid));
+    str += ordinalize(_formatDate(date, '%-d', tzid));
     return str;
   },
   humanWeekday(date, tzid): string {
@@ -201,13 +214,13 @@ const dateFormats: DateFormats = {
   humanDay(date, tzid): string {
     // Monday, March 22nd
     let str = _formatDate(date, '%A, %B ', tzid);
-    str += inflect.ordinalize(_formatDate(date, '%-d', tzid));
+    str += ordinalize(_formatDate(date, '%-d', tzid));
     return str;
   },
   humanShortDay(date, tzid): string {
     // Monday, Mar 22nd
     let str = _formatDate(date, '%A, %b ', tzid);
-    str += inflect.ordinalize(_formatDate(date, '%-d', tzid));
+    str += ordinalize(_formatDate(date, '%-d', tzid));
     return str;
   },
   humanShoppingDay(date, tzid): string {

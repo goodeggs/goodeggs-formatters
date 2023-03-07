@@ -2407,10 +2407,6 @@ indent-string@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/indent-string/-/indent-string-4.0.0.tgz#624f8f4497d619b2d9768531d58f4122854d7251"
 
-inflect@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/inflect/-/inflect-0.5.0.tgz#1c56c1951ada456a0e3d44dd95ef9d13e1515db9"
-
 inflight@^1.0.4:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/inflight/-/inflight-1.0.6.tgz#49bd6331d7d02d0c09bc910a1075ba8165b56df9"
