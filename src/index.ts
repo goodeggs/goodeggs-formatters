@@ -1,6 +1,5 @@
 import accounting from 'accounting';
 import formatLocation from 'format-location';
-import getto from 'getto';
 import clock from 'node-clock';
 import _ from 'underscore';
 
@@ -139,19 +138,19 @@ const _isTomorrow = function (date: Date, tzid: string): boolean {
   tomorrow.setDate(tomorrow.getDate() + 1);
   return sameDay(date, tomorrow, tzid);
 };
-const ordinalize = function (i: string): string {
-  const j = parseInt(i) % 10,
-    k = parseInt(i) % 100;
+const ordinalize = function (date: string): string {
+  const j = parseInt(date) % 10;
+  const k = parseInt(date) % 100;
   if (j === 1 && k !== 11) {
-    return `${i}st`;
+    return `${date}st`;
   }
   if (j === 2 && k !== 12) {
-    return `${i}nd`;
+    return `${date}nd`;
   }
   if (j === 3 && k !== 13) {
-    return `${i}rd`;
+    return `${date}rd`;
   }
-  return `${i}th`;
+  return `${date}th`;
 };
 
 const dateFormats: DateFormats = {
@@ -340,14 +339,13 @@ const formatDateRange = function (startAt: Interval, tzid: string, options?: Opt
 };
 
 const formatPromoCodeValue = function (promoCode: {type: string; value: number}): string {
-  const promoCodeGetter: {get: (value: string) => string | number} = getto(promoCode);
-  switch (promoCodeGetter.get('type')) {
+  switch (promoCode.type) {
     case 'dollar':
-      return formatMoney(promoCodeGetter.get('value') as number, {wholeNumberPrecision: 0});
+      return formatMoney(promoCode.value, {wholeNumberPrecision: 0});
     case 'percent':
-      return `${promoCodeGetter.get('value')}%`;
+      return `${promoCode.value}%`;
     default:
-      throw new Error(`unhandled PromoCode type: ${promoCodeGetter.get('type')}`);
+      throw new Error(`unhandled PromoCode type: ${promoCode.type}`);
   }
 };
 
@@ -365,7 +363,7 @@ const formatProductName = function (
       enabled?: boolean;
       name?: string;
     };
-    name?: string;
+    name: string;
     ofTheIsAvailableFor?: (arg?: {pickupDate?: number}) => boolean;
   },
   options?: {
@@ -379,22 +377,22 @@ const formatProductName = function (
   }
   const {variant, excludeProductName, pickupDate} = options;
 
-  const productOrLineItemGetter: {get: (value: string) => string} = getto(productOrLineItem);
-
   if (variant === 'stack') {
-    return productOrLineItemGetter.get('stackName');
+    return _.get(productOrLineItem, 'stackName') as string;
   } else if (
     (typeof productOrLineItem.ofTheIsAvailableFor === 'function'
       ? productOrLineItem.ofTheIsAvailableFor({pickupDate})
       : undefined) &&
-    productOrLineItemGetter.get('ofThe.name') != null
+    _.get(productOrLineItem, ['ofThe', 'name']) != null
   ) {
     if (excludeProductName) {
-      return productOrLineItemGetter.get('ofThe.name');
+      return _.get(productOrLineItem, ['ofThe', 'name']) as string;
     }
-    return `${productOrLineItemGetter.get('name')}: ${productOrLineItemGetter.get('ofThe.name')}`;
+    return `${_.get(productOrLineItem, 'name') as string}: ${
+      _.get(productOrLineItem, ['ofThe', 'name']) as string
+    }`;
   }
-  return productOrLineItemGetter.get('name');
+  return _.get(productOrLineItem, 'name') as string;
 };
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

@@ -128,7 +128,7 @@ describe('goodeggs-formatters', function () {
         enabled?: boolean;
         name?: string;
       };
-      name?: string;
+      name: string;
       ofTheIsAvailableFor?: (arg?: {pickupDate?: number}) => boolean;
     };
     beforeEach(
