@@ -7,7 +7,7 @@
     "Michael Kebbekus <michael.kebbekus@goodeggs.com>",
     "Michelle Becker <michelle.becker@goodeggs.com>"
   ],
-  "license": "UNLICENSED",
+  "license": "Private",
   "main": "lib/index.js",
   "repository": {
     "type": "git",
@@ -46,7 +46,7 @@
     "build:clean": "rm -rf lib",
     "build:transpile": "babel --extensions=.ts,.js,.jsx,.tsx src --out-dir lib --copy-files",
     "build:types": "tsc --project tsconfig.declarations.json",
-    "prepublish": "npm run build",
+    "prepublish": "yarn run build",
     "lint": "getk run lint-es '**/*.{js,jsx,ts,tsx}' --ignore-path .gitignore",
     "lint:fix": "getk run fix-es --ignore-path .gitignore",
     "test": "yarn run typecheck && yarn run lint && yarn run test:mocha",
